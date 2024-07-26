@@ -10,9 +10,54 @@
             </div>
             <div class="flex flex-row justify-between items-center pt-">
                 <div>340 ₽</div>
-                <button class="bg-secondary p-3 px-5 text-sm rounded-full text-white shadow-xl">Выбрать</button>
+                <button class="btn-primary" @click="addToCart({
+                    id: 1,
+                    name: 'Пепперони',
+                    description: 'Пикантная пепперони, увеличенная порция моцареллы, томаты, фирменный томатный соус',
+                    price: 340,
+                    quantity: 1,
+                    image: '/img/Pepperoni-Pizza.png'
+                })">Выбрать</button>
             </div>
         </div>
 
     </div>
+    <div>{{ totalPrice }}</div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useCartStore } from '~/stores/cart';
+import { storeToRefs } from 'pinia';
+
+useHead({
+    title: "ням-ням"
+});
+
+
+const cartStore = useCartStore();
+const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);
+
+interface pizza {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    image: string;
+}
+
+
+function addToCart(product: pizza) {
+    cartStore.addItem({
+        id: product.id,
+        name: product.name,
+        description: product.name,
+        price: product.price,
+        quantity: product.quantity,
+        image: product.image
+    });
+
+}
+
+</script>
