@@ -1,28 +1,64 @@
 <template>
     <h1 class="py-5">Пиццы</h1>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10">
-        <div class="flex flex-col">
-            <img src="/img/Pepperoni-Pizza.png" alt="">
-            <h2 class="text-center">Пепперони</h2>
-            <div class="text-gray-500 my-5 text-sm">Пикантная пепперони, увеличенная порция моцареллы, томаты, фирменный
-                томатный
-                соус
-            </div>
-            <div class="flex flex-row justify-between items-center pt-">
-                <div>340 ₽</div>
-                <button class="btn-primary" @click="addToCart({
-                    id: 1,
-                    name: 'Пепперони',
-                    description: 'Пикантная пепперони, увеличенная порция моцареллы, томаты, фирменный томатный соус',
-                    price: 340,
-                    quantity: 1,
-                    image: '/img/Pepperoni-Pizza.png'
-                })">Выбрать</button>
+        <div v-for="pizza in pizzas" :key="pizza.id" class="flex flex-col">
+            <img :src="pizza.image" alt="">
+            <div class="title text-center">{{ pizza.name }}</div>
+            <div class="text-gray-500 my-5 description text-container">{{ pizza.description }}</div>
+            <div class="flex flex-row justify-between items-center">
+                <div class="price">{{ pizza.price }} ₽</div>
+                <button class="btn-primary" @click="showModal(pizza)">Выбрать</button>
             </div>
         </div>
-
     </div>
-    <div>{{ totalPrice }}</div>
+
+    <div v-if="selectedPizza"
+        class="fixed z-10 inset-0 overflow-y-auto animate__animated animate__fadeIn flex flex-col justify-center items-center">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="hideModal">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <div
+            class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-xs sm:max-w-xl md:max-w-3xl w-full">
+            <div class="grid sm:grid-cols-2 grid-rows-1 divide-x">
+                <div class="place-self-center">
+                    <img class="w-64 sm:w-full" :src="selectedPizza.image" alt="">
+                </div>
+                <div class="flex flex-col gap-3 p-3">
+                    <div class="text-xl text-center pt-2">{{ selectedPizza.name }}</div>
+                    <div class="bg-gray-100 rounded-xl p-3 description">{{ selectedPizza.description }}
+                    </div>
+                    <div class="grow flex flex-col justify-end">
+                        <div class="text-center pb-2"></div>
+                        <hr class="dashed">
+                        <div class="mt-3">
+                            <button @click="addToCart(selectedPizza)" v-if="selectedPizza.quantity == 0"
+                                class="btn-primary w-full">Добавить в
+                                корзину</button>
+                            <div v-else
+                                class="flex flex-row gap-3 items-center justify-end animate__animated animate__fadeIn">
+                                <div class="flex flex-row gap-2 items-center w-28">
+                                    <button @click="removefromCart(selectedPizza)"
+                                        class="w-8 bg-gradient-to-b from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-200 active:from-gray-200 active:to-gray-300 text-black text-2xl my-1 rounded-xl hover:shadow-inner active:shadow-none border">
+                                        -
+                                    </button>
+                                    <div>{{ selectedPizza.quantity }}</div>
+                                    <button @click="addToCart(selectedPizza)"
+                                        class="w-8 bg-gradient-to-b from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-200 active:from-gray-200 active:to-gray-300 text-black text-2xl my-1 rounded-xl hover:shadow-inner active:shadow-none border">
+                                        +
+                                    </button>
+                                </div>
+                                <div class="grow flex justify-end items-center gap-1">
+                                    <div class="price">{{ selectedPizza.price * selectedPizza.quantity }} ₽
+                                    </div>
+                                    <button class="btn-primary" @click="selectedPizza = null">Корзина</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -35,29 +71,84 @@ useHead({
 });
 
 
-const cartStore = useCartStore();
-const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);
-
 interface pizza {
     id: number;
     name: string;
     description: string;
     price: number;
-    quantity: number;
+    quantity?: number | any;
     image: string;
 }
+const pizzas: pizza[] = [
+    {
+        id: 1,
+        name: 'Пепперони',
+        description: 'Пикантная пепперони, увеличенная порция моцареллы, томаты, фирменный томатный соус',
+        price: 340,
+        image: '/img/Pepperoni-Pizza.png'
+    },
+    {
+        id: 2,
+        name: 'Маргарита',
+        description: 'Классическая маргарита с моцареллой, томатами и свежей зеленью',
+        price: 320,
+        image: '/img/Pepperoni-Pizza.png'
+    },
+    {
+        id: 3,
+        name: 'Квартето',
+        description: 'Четыре вкуса в одной пицце: пепперони, колбаса, шампиньоны и оливки',
+        price: 400,
+        image: '/img/Pepperoni-Pizza.png'
+    },
+];
 
 
-function addToCart(product: pizza) {
+const cartStore = useCartStore();
+const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);
+
+const selectedPizza = ref<pizza | null>();
+
+function showModal(pizza: pizza) {
+    selectedPizza.value = pizza;
+    selectedPizza.value.quantity = quantitypizza(selectedPizza.value);
+}
+
+function hideModal() {
+    selectedPizza.value = null;
+}
+
+function pizzaincart(pizza: pizza) {
+    return cartItems.value.some((item) => item.id === pizza.id);
+}
+
+function quantitypizza(pizza: pizza) {
+    if (cartItems.value.some((item) => item.id === pizza.id)) {
+        return cartItems.value.filter((item) => item.id === pizza.id)[0].quantity
+    }
+    else return 0
+}
+
+function addToCart(pizza: pizza, count = 1) {
+    pizza.quantity++
     cartStore.addItem({
-        id: product.id,
-        name: product.name,
-        description: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        image: product.image
+        id: pizza.id,
+        name: pizza.name,
+        description: pizza.name,
+        price: pizza.price,
+        quantity: count,
+        image: pizza.image
     });
+}
 
+function removefromCart(pizza: pizza) {
+    pizza.quantity--
+    if (quantitypizza(pizza) == 0) {
+        cartStore.removeItem(pizza.id)
+    }
+    else {
+        cartStore.updateItemQuantity(pizza.id, pizza.quantity)
+    }
 }
 
 </script>

@@ -29,3 +29,26 @@ h2 {
 p {
 	@apply mx-auto max-w-[700px] md:text-xl;
 }
+
+.price {
+	@apply text-sm sm:text-base;
+}
+
+.title {
+	@apply text-xl;
+}
+
+.description {
+	@apply font-light text-xs sm:text-sm;
+}
+
+.btn-primary {
+	@apply bg-secondary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary;
+}
+.text-container {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}

@@ -13,7 +13,7 @@ interface CartItem {
 export const useCartStore = defineStore("cart", () => {
 	const items = ref<CartItem[]>([]);
 
-	const pizzalocalstorage = localStorage.getItem("items");
+	const pizzalocalstorage = sessionStorage.getItem("items");
 
 	if (pizzalocalstorage) {
 		items.value = JSON.parse(pizzalocalstorage)._value;
@@ -60,7 +60,7 @@ export const useCartStore = defineStore("cart", () => {
 	watch(
 		() => items,
 		(state) => {
-			localStorage.setItem("items", JSON.stringify(state));
+			sessionStorage.setItem("items", JSON.stringify(state));
 		},
 		{ deep: true }
 	);
