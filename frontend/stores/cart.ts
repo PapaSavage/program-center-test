@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
 
 interface CartItem {
@@ -12,6 +12,12 @@ interface CartItem {
 
 export const useCartStore = defineStore("cart", () => {
 	const items = ref<CartItem[]>([]);
+
+	const pizzalocalstorage = localStorage.getItem("items");
+
+	if (pizzalocalstorage) {
+		items.value = JSON.parse(pizzalocalstorage)._value;
+	}
 
 	const totalItems = computed(() => {
 		return items.value.reduce((total, item) => total + item.quantity, 0);
@@ -50,6 +56,14 @@ export const useCartStore = defineStore("cart", () => {
 			removeItem(itemId);
 		}
 	}
+
+	watch(
+		() => items,
+		(state) => {
+			localStorage.setItem("items", JSON.stringify(state));
+		},
+		{ deep: true }
+	);
 
 	return {
 		items,
