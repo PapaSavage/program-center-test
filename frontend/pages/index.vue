@@ -1,19 +1,30 @@
 <template>
-    <h1 class="py-5">Пиццы</h1>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10">
-        <div v-for="pizza in pizzas" :key="pizza.id" class="flex flex-col">
+    <h1 class="py-5 animate__animated animate__fadeIn">Пиццы</h1>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-14">
+        <div @click="showModal(pizza)" v-for="pizza in pizzas" :key="pizza.id"
+            class="flex p-4 rounded-lg transition-all duration-300 flex-col bg-gradient-to-b hover:bg-gray-100 animate__animated animate__fadeIn">
             <img :src="pizza.image" alt="">
             <div class="title text-center">{{ pizza.name }}</div>
             <div class="text-gray-500 my-5 description text-container">{{ pizza.description }}</div>
             <div class="flex flex-row justify-between items-center">
                 <div class="price">{{ pizza.price }} ₽</div>
-                <button class="btn-primary" @click="showModal(pizza)">Выбрать</button>
+                <button class="btn-primary" @click="showModal(pizza)">
+                    <div v-if="quantitypizza(pizza) > 0">Добавить</div>
+                    <div v-else>Выбрать</div>
+                </button>
             </div>
         </div>
-    </div>
 
+    </div>
+    <NuxtLink v-if="totalItems > 0" to="/cart"
+        class="fixed bottom-5 right-5 bg-black p-3 px-5 rounded-full flex gap-2 text-white shadow-2xl animate__animated animate__fadeIn">
+        Корзина
+        <span class="text-primary flex flex-row items-center">{{ totalPrice
+        }}₽
+        </span>
+    </NuxtLink>
     <div v-if="selectedPizza"
-        class="fixed z-10 inset-0 overflow-y-auto animate__animated animate__fadeIn flex flex-col justify-center items-center">
+        class="fixed z-50 inset-0 overflow-y-auto animate__animated animate__fadeIn flex flex-col justify-center items-center">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true" @click="hideModal">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
@@ -50,7 +61,8 @@
                                 <div class="grow flex justify-end items-center gap-1">
                                     <div class="price">{{ selectedPizza.price * selectedPizza.quantity }} ₽
                                     </div>
-                                    <button class="btn-primary" @click="selectedPizza = null">Корзина</button>
+                                    <NuxtLink to="/cart" class="btn-primary" @click="selectedPizza = null;">Корзина
+                                    </NuxtLink>
                                 </div>
                             </div>
                         </div>
@@ -101,6 +113,13 @@ const pizzas: pizza[] = [
         price: 400,
         image: '/img/Pepperoni-Pizza.png'
     },
+    {
+        id: 4,
+        name: 'Квартето',
+        description: 'Четыре вкуса в одной пицце: пепперони, колбаса, шампиньоны и оливки',
+        price: 400,
+        image: '/img/Pepperoni-Pizza.png'
+    },
 ];
 
 
@@ -134,7 +153,7 @@ function addToCart(pizza: pizza, count = 1) {
     cartStore.addItem({
         id: pizza.id,
         name: pizza.name,
-        description: pizza.name,
+        description: pizza.description,
         price: pizza.price,
         quantity: count,
         image: pizza.image
