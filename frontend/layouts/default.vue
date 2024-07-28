@@ -7,6 +7,8 @@
         </a>
         <NuxtLink v-if="route.name == 'cart'" to="/" class="btn-primary animate__animated animate__fadeIn">К выбору
         </NuxtLink>
+        <!-- <NuxtLink v-if="route.name == 'order'" to="/cart" class="btn-primary animate__animated animate__fadeIn">К корзине
+        </NuxtLink> -->
     </header>
     <div class="px-4 sm:container">
         <slot />
