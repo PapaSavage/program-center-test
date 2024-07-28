@@ -75,9 +75,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useCartStore } from '~/stores/cart';
-import { storeToRefs } from 'pinia';
 
 useHead({
     title: "ням-ням"

@@ -31,7 +31,7 @@ p {
 }
 
 .price {
-	@apply text-sm sm:text-base;
+	@apply text-xs sm:text-sm md:text-base;
 }
 
 .title {
