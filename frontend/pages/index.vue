@@ -1,13 +1,15 @@
 <template>
-    <h1 class="py-5 animate__animated animate__fadeIn">Пиццы</h1>
+    <h1 class="py-5 animate__animated animate__fadeIn">Пицца</h1>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-10 animate__animated animate__fadeIn pb-20">
-        <div v-for="pizza in pizzas" :key="pizza.id" class="flex flex-col">
+        <div v-for="pizza in     pizzas    " :key="pizza.id" class="flex flex-col">
             <img :src="pizza.image" alt="">
             <div class="title text-center">{{ pizza.name }}</div>
             <div class="text-gray-500 my-5 description text-container">{{ pizza.description }}</div>
             <div class="flex flex-row justify-between items-center">
                 <div class="price">{{ pizza.price }} ₽</div>
-                <button class="btn-primary" @click="showModal(pizza)">
+                <button class=""
+                    :class="{ 'btn-primary': quantitypizza(pizza) == 0, 'btn-secondary': quantitypizza(pizza) > 0 }"
+                    @click="showModal(pizza)">
                     <div v-if="quantitypizza(pizza) == 0">
                         Выбрать
                     </div>
@@ -40,7 +42,9 @@
                     <div class="bg-gray-100 rounded-xl p-3 description">{{ selectedPizza.description }}
                     </div>
                     <div class="grow flex flex-col justify-end">
-                        <div class="text-center pb-2 description">{{ selectedPizza.price }} ₽</div>
+                        <div v-if="selectedPizza.quantity == 0" class="text-center pb-2 description">{{
+                            selectedPizza.price
+                        }} ₽</div>
                         <hr class="dashed">
                         <div class="mt-3">
                             <button @click="addToCart(selectedPizza)" v-if="selectedPizza.quantity == 0"
@@ -80,6 +84,7 @@ useHead({
     title: "ням-ням"
 });
 
+const test = ref(true)
 
 interface pizza {
     id: number;
@@ -89,30 +94,12 @@ interface pizza {
     quantity?: number | any;
     image: string;
 }
-const pizzas: pizza[] = [
-    {
-        id: 1,
-        name: 'Пепперони',
-        description: 'Пикантная пепперони, увеличенная порция моцареллы, томаты, фирменный томатный соус',
-        price: 340,
-        image: '/img/Pepperoni-Pizza.png'
-    },
-    {
-        id: 2,
-        name: 'Маргарита',
-        description: 'Классическая маргарита с моцареллой, томатами и свежей зеленью',
-        price: 320,
-        image: '/img/Pepperoni-Pizza.png'
-    },
-    {
-        id: 3,
-        name: 'Квартето',
-        description: 'Четыре вкуса в одной пицце: пепперони, колбаса, шампиньоны и оливки',
-        price: 400,
-        image: '/img/Pepperoni-Pizza.png'
-    },
-];
+const pizzas = ref<pizza[]>()
 
+await useFetch('http://127.0.0.1:8000/api/pizzas').then(response => {
+    pizzas.value = response.data.value as pizza[];
+    console.log(pizzas.value)
+})
 
 const cartStore = useCartStore();
 const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);

@@ -43,8 +43,17 @@ p {
 }
 
 .btn-primary {
-	@apply bg-secondary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary;
+	@apply bg-secondary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary transition-all duration-200;
 }
+
+.btn-primary-disabled {
+	@apply bg-gray-500 p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-gray-700 transition-all duration-200;
+}
+
+.btn-secondary {
+	@apply bg-primary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary transition-all duration-200;
+}
+
 .text-container {
 	overflow: hidden;
 	text-overflow: ellipsis;

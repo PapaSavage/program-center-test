@@ -1,6 +1,12 @@
 <template>
     <NuxtLink class="text-primary hover:underline" href="/cart">К корзине</NuxtLink>
     <h1 class="py-5 animate__animated animate__fadeIn pb-10">Оформление заказа</h1>
+
+    <div v-if="isOrderSuccessful"
+        class="fixed bottom-4 right-4 text-sm bg-green-600 text-white p-4 rounded-lg shadow-lg animate__animated animate__fadeIn">
+        Заказ успешно оформлен! Мы свяжемся с вами скоро.
+    </div>
+
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-16">
         <div class="col-span-2">
             <div class="grid grid-cols-2 gap-4">
@@ -42,7 +48,8 @@
                 </div>
             </div>
             <hr class="dotted">
-            <button :disabled="!isFormValid" @click="submitOrder" class="btn-primary w-full text-center">
+            <button :disabled="!isFormValid" @click="submitOrder"
+                :class="{ 'btn-primary-disabled': !isFormValid, 'btn-primary': isFormValid }" class="w-full text-center">
                 Оформить заказ
             </button>
         </div>
@@ -57,6 +64,7 @@ useHead({
 const cartStore = useCartStore();
 const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);
 
+
 interface ordercredential {
     name: string;
     phone: string;
@@ -64,17 +72,62 @@ interface ordercredential {
     comment?: string;
 }
 
+interface ResponseData {
+    message?: string;
+    order_id?: number;
+}
+
+
 const ordercred = ref<ordercredential>({ name: '', phone: '', address: '', comment: '' });
+
+const isOrderSuccessful = ref(false);
 
 const validName = computed(() => ordercred.value.name.trim() !== '');
 const validPhone = computed(() => /^\+\d{11,15}$/.test(ordercred.value.phone));
 const validAddress = computed(() => ordercred.value.address.trim() !== '');
 const isFormValid = computed(() => validName.value && validPhone.value && validAddress.value);
 
-const submitOrder = () => {
+interface CartItem {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    image: string;
+}
+
+
+const submitOrder = async () => {
+
     if (isFormValid.value) {
-        console.log(ordercred.value);
-        cartStore.clearCart();
+        const order = {
+            fio: ordercred.value.name,
+            phone: ordercred.value.phone,
+            address: ordercred.value.address,
+            comment: ordercred.value.comment,
+            listofpizza: cartItems.value.map((item: CartItem) => ({
+                id: item.id,
+                quantity: item.quantity,
+            })),
+        }
+        try {
+            const data = await $fetch<ResponseData>('http://127.0.0.1:8000/api/create-order', {
+                method: 'post',
+                body: order,
+            });
+
+            if (data.message === 'success') {
+                isOrderSuccessful.value = true;
+                setTimeout(() => { isOrderSuccessful.value = false; }, 4000);
+                ordercred.value = { name: '', phone: '', address: '', comment: '' };
+                cartStore.clearCart();
+                setTimeout(() => { navigateTo('/'); }, 4000);
+            } else {
+                console.error('Order submission failed:', data);
+            }
+        } catch (error) {
+            console.error('An error occurred while submitting the order:', error);
+        }
     }
 };
 </script>
