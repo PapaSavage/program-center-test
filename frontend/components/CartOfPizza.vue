@@ -3,8 +3,8 @@
         <img class="w-32 h-32" :src="pizza.image" alt="">
         <div class="flex flex-col justify-between">
             <div>
-                <div class="flex flex-row items-center">{{ pizza.name }}/
-                    <span class="block sm:hidden"> {{ pizza.price * pizza.quantity }}₽</span>
+                <div class="flex flex-row items-center gap-1">{{ pizza.name }}
+                    <span class="block sm:hidden">/ {{ pizza.price * pizza.quantity }}₽</span>
                 </div>
                 <div class="font-light text-xs text-container-sm">{{ pizza.description }}</div>
             </div>
@@ -20,7 +20,7 @@
                         +
                     </button>
                 </div>
-                <button class="text-red-500 text-sm text-light" @click="cartStore.removeItem(pizza.id)">Убрать</button>
+                <button class="text-red-500 text-sm text-light" @click="clearitem(pizza)">Убрать</button>
             </div>
         </div>
         <div class="price pt-2 hidden sm:block">{{ pizza.price * pizza.quantity }}₽</div>
@@ -80,12 +80,12 @@ function removefromCart(pizza: pizza) {
     pizza.quantity--
     if (quantitypizza(pizza) == 0) {
         cartStore.removeItem(pizza.id)
+        if (totalItems.value == 0) {
+            navigateTo("/")
+        }
     }
     else {
         cartStore.updateItemQuantity(pizza.id, pizza.quantity)
-    }
-    if (totalItems.value == 0) {
-        navigateTo("/")
     }
 }
 
