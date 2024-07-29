@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col">
         <img :src="pizza.image" alt="">
-        <div class="title text-center">{{ pizza.name }}</div>
+        <div class="title text-center mt-4">{{ pizza.name }}</div>
         <div class="text-gray-500 my-5 description text-container">{{ pizza.description }}</div>
         <div class="flex flex-row justify-between items-center">
             <div class="price">{{ pizza.price }} ₽</div>
@@ -25,7 +25,7 @@
             class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-xs sm:max-w-xl md:max-w-3xl w-full">
             <div class="grid sm:grid-cols-2 grid-rows-1 divide-x">
                 <div class="place-self-center">
-                    <img class="w-64 sm:w-full" :src="selectedPizza.image" alt="">
+                    <img class="w-64 sm:w-full my-4 px-4" :src="selectedPizza.image" alt="">
                 </div>
                 <div class="flex flex-col gap-3 p-3">
                     <div class="text-xl text-center pt-2">{{ selectedPizza.name }}</div>

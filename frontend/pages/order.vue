@@ -78,11 +78,15 @@ interface ResponseData {
     order_id?: number;
 }
 
-
-interface ResponseData {
-    message?: string;
-    order_id?: number;
+interface CartItem {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    image: string;
 }
+
 
 
 const ordercred = ref<ordercredential>({ name: '', phone: '', address: '', comment: '' });
@@ -95,26 +99,8 @@ const validPhone = computed(() => /^\+\d{11,15}$/.test(ordercred.value.phone));
 const validAddress = computed(() => ordercred.value.address.trim() !== '');
 const isFormValid = computed(() => validName.value && validPhone.value && validAddress.value);
 
-interface CartItem {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    image: string;
-}
-
 
 const submitOrder = async () => {
-
-    interface CartItem {
-        id: number;
-        name: string;
-        description: string;
-        price: number;
-        quantity: number;
-        image: string;
-    }
 
     if (isFormValid.value) {
         const order = {
