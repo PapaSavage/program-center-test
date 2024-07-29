@@ -4,7 +4,7 @@
 
     <div v-if="isOrderSuccessful"
         class="fixed bottom-4 right-4 text-sm bg-green-600 text-white p-4 rounded-lg shadow-lg animate__animated animate__fadeIn">
-        Заказ успешно оформлен! Мы свяжемся с вами скоро.
+        Заказ успешно оформлен! Мы скоро с вами свяжемся.
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-16">
@@ -65,6 +65,7 @@ const cartStore = useCartStore();
 const { items: cartItems, totalItems, totalPrice } = storeToRefs(cartStore);
 
 
+
 interface ordercredential {
     name: string;
     phone: string;
@@ -78,9 +79,16 @@ interface ResponseData {
 }
 
 
+interface ResponseData {
+    message?: string;
+    order_id?: number;
+}
+
+
 const ordercred = ref<ordercredential>({ name: '', phone: '', address: '', comment: '' });
 
 const isOrderSuccessful = ref(false);
+
 
 const validName = computed(() => ordercred.value.name.trim() !== '');
 const validPhone = computed(() => /^\+\d{11,15}$/.test(ordercred.value.phone));
@@ -98,6 +106,15 @@ interface CartItem {
 
 
 const submitOrder = async () => {
+
+    interface CartItem {
+        id: number;
+        name: string;
+        description: string;
+        price: number;
+        quantity: number;
+        image: string;
+    }
 
     if (isFormValid.value) {
         const order = {
@@ -129,7 +146,7 @@ const submitOrder = async () => {
             console.error('An error occurred while submitting the order:', error);
         }
     }
-};
+}
 </script>
 
 <style scoped>
