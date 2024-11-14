@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Models\Pizza;
 
 
@@ -14,7 +15,20 @@ class PizzaController extends Controller
      */
     public function index()
     {
-        return Pizza::all();
+        // Получаем все пиццы из базы данных
+        $pizzas = Pizza::all();
+
+        // Формируем массив с полными URL для изображений
+        $pizzasWithUrls = $pizzas->map(function ($pizza) {
+            // Проверяем, есть ли изображение
+            if ($pizza->image) {
+                // Генерируем полный URL
+                $pizza->image = url("/storage/images/pizzas/" . $pizza->image);
+            }
+            return $pizza;
+        });
+
+        return response()->json($pizzasWithUrls);
     }
 
     /**
