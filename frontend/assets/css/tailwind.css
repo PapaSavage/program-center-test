@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: "Unbounded", sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+body {
+	font-family: "Unbounded";
+}
+html {
+	width: 100vw;
+	scroll-behavior: smooth;
+	overflow-x: hidden;
+}
+
+h1 {
+	@apply text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl;
+}
+
+h2 {
+	@apply text-xl tracking-normal md:text-2xl lg:text-3xl;
+}
+
+p {
+	@apply mx-auto max-w-[700px] md:text-xl;
+}
+
+.price {
+	@apply text-xs sm:text-sm md:text-base;
+}
+
+.title {
+	@apply text-xl;
+}
+
+.description {
+	@apply font-light text-xs sm:text-sm;
+}
+
+.btn-primary {
+	@apply bg-secondary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary transition-all duration-200;
+}
+
+.btn-primary-disabled {
+	@apply bg-gray-500 p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-gray-700 transition-all duration-200;
+}
+
+.btn-secondary {
+	@apply bg-primary p-2 px-4 sm:p-3 sm:px-5 text-sm rounded-full text-white shadow-xl hover:shadow-inner hover:bg-orange-600 active:bg-secondary transition-all duration-200;
+}
+
+.text-container {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+}
+
+.text-container-sm {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+
+input {
+	@apply mt-3 block w-full border border-gray-300 rounded-md shadow-sm py-2
+                                            px-3 focus:outline-none focus:ring-primary focus:border-primary
+                                            text-sm transition-all duration-300 ease-in-out;
+}
+textarea {
+	@apply mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2
+                                            px-3 focus:outline-none focus:ring-primary focus:border-primary
+                                            text-sm transition-all duration-300 ease-in-out;
+}
